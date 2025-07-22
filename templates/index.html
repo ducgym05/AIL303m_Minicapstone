@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Recommender - Your Next Adventure Awaits!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="logo">GameRecommender</a>
+            <nav>
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('top_overall_games') }}">Top 10 Overall</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {# Hiển thị kết quả tìm kiếm nếu có #}
+        {% if show_search_results %}
+            <section class="section search-results-section">
+                <h2>Search Results for "{{ query }}" <i class="fas fa-search"></i></h2>
+                {% if search_results %}
+                    <ul class="game-list">
+                        {# item là dict: {'original_title': ..., 'rating': ..., 'normalized_title': ..., 'image_path': ...} #}
+                        {% for item in search_results %}
+                            <li class="game-item" style="background-image: url('{{ item.image_path if item.image_path else url_for('static', filename='placeholder.jpg') }}');">
+                                <div class="game-item-overlay"></div> {# Lớp phủ #}
+                                <a href="{{ url_for('game_detail', game_name_normalized=item.normalized_title) }}" class="game-title">{{ item.original_title }}</a>
+                                <span class="game-rating"><i class="fas fa-star"></i> {{ item.rating }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="no-results">No games found matching "{{ query }}".</p>
+                {% endif %}
+                <p class="back-link-container"><a href="{{ url_for('index') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a></p>
+            </section>
+        {% endif %}
+
+        {# Hiển thị 10 game ngẫu nhiên trên trang chủ #}
+        {% if show_random_games %}
+            <section class="section random-games-section">
+                <h2>Discover Your Next Favorite Game! <i class="fas fa-dice"></i></h2>
+                <p class="section-description">Here are 10 randomly selected popular games to get you started.</p>
+                <form action="{{ url_for('search_game') }}" method="get" class="search-form">
+                    <input type="text" name="query" placeholder="Search games by name..." value="{{ query if query else '' }}" class="search-input">
+                    <button type="submit" class="search-button"><i class="fas fa-search"></i></button>
+                </form>
+                <ul class="game-list">
+                    {# item là dict: {'original_title': ..., 'rating': ..., 'normalized_title': ..., 'image_path': ...} #}
+                    {% for item in games %}
+                        <li class="game-item" style="background-image: url('{{ item.image_path if item.image_path else url_for('static', filename='placeholder.jpg') }}');">
+                            <div class="game-item-overlay"></div> {# Lớp phủ #}
+                            <a href="{{ url_for('game_detail', game_name_normalized=item.normalized_title) }}" class="game-title">{{ item.original_title }}</a>
+                            <span class="game-rating"><i class="fas fa-star"></i> {{ item.rating }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% elif show_top_overall %} {# Hiển thị 10 game rating cao nhất khi nhấn nút #}
+            <section class="section top-overall-games-section">
+                <h2>Top 10 Games of All Time <i class="fas fa-trophy"></i></h2>
+                <p class="section-description">Explore the highest-rated games in our collection.</p>
+                <ul class="game-list">
+                    {# item là dict: {'original_title': ..., 'rating': ..., 'normalized_title': ..., 'image_path': ...} #}
+                    {% for item in games %}
+                        <li class="game-item" style="background-image: url('{{ item.image_path if item.image_path else url_for('static', filename='placeholder.jpg') }}');">
+                            <div class="game-item-overlay"></div> {# Lớp phủ #}
+                            <a href="{{ url_for('game_detail', game_name_normalized=item.normalized_title) }}" class="game-title">{{ item.original_title }}</a>
+                            <span class="game-rating"><i class="fas fa-star"></i> {{ item.rating }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <p class="back-link-container"><a href="{{ url_for('index') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a></p>
+            </section>
+        {% endif %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 GameRecommender. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
