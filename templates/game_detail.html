@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    {# Thêm style cho ảnh nền #}
+    
     {% if game_image_path %}
     <style>
         .game-detail-hero {
@@ -15,7 +15,7 @@
             background-size: cover;
             background-position: center;
             position: relative;
-            padding: 100px 0; /* Đủ không gian cho nội dung */
+            padding: 100px 0;
             margin-bottom: 30px;
             border-radius: 10px;
             overflow: hidden;
@@ -28,8 +28,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7); /* Lớp phủ đen để chữ dễ đọc */
-            backdrop-filter: blur(5px); /* Hiệu ứng làm mờ nền */
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
             z-index: 1;
         }
         .game-detail-hero .content {
@@ -39,13 +39,13 @@
             text-align: center;
         }
         .game-detail-hero h1 {
-            color: white; /* Đảm bảo tiêu đề trắng trên nền đen */
+            color: white;
             font-size: 3em;
             margin-bottom: 10px;
         }
         .game-detail-hero .game-rating {
             font-size: 1.8em;
-            color: #ffd700; /* Màu vàng kim cho rating */
+            color: #ffd700;
         }
     </style>
     {% endif %}
@@ -62,7 +62,6 @@
     </header>
 
     <main class="container">
-        {# Phần ảnh nền và tiêu đề game #}
         <section class="game-detail-hero">
             <div class="content">
                 <p class="back-link-container"><a href="{{ url_for('index') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a></p>
@@ -75,7 +74,6 @@
 
         <section class="section game-detail-section">
             <div class="game-info-container">
-                {# Ảnh chính hiển thị rõ hơn (tùy chọn, nếu không muốn ảnh nền) #}
                 {% if game_image_path %}
                     <div class="game-image-box">
                         <img src="{{ game_image_path }}" alt="{{ game_name }} image" class="game-image">
@@ -84,12 +82,9 @@
 
                 <div class="game-description">
                     <h3>Description</h3>
-                    {# Hiển thị mô tả cắt ngắn #}
                     <p id="truncated-desc">{{ truncated_description }}</p>
-                    {# Hiển thị mô tả đầy đủ (mặc định ẩn) #}
                     <p id="full-desc" style="display: none;">{{ full_description }}</p>
                     
-                    {# Nút mở rộng chỉ hiển thị nếu mô tả đầy đủ dài hơn mô tả cắt ngắn #}
                     {% if full_description != truncated_description %}
                         <button id="toggle-desc-btn" class="expand-btn">Read more</button>
                     {% endif %}
@@ -100,11 +95,9 @@
                 <h2>Recommended Games for You <i class="fas fa-gamepad"></i></h2>
                 {% if recommended_games %}
                     <ul class="game-list">
-                        {# item là dict: {'original_title': ..., 'rating': ..., 'normalized_title': ..., 'image_path': ...} #}
                         {% for item in recommended_games %}
-                            {# Áp dụng style background-image và lớp phủ cho các game đề xuất #}
                             <li class="game-item" style="background-image: url('{{ item.image_path }}');">
-                                <div class="game-item-overlay"></div> {# Lớp phủ #}
+                                <div class="game-item-overlay"></div>
                                 <a href="{{ url_for('game_detail', game_name_normalized=item.normalized_title) }}" class="game-title">{{ item.original_title }}</a>
                                 <span class="game-rating"><i class="fas fa-star"></i> {{ item.rating }}</span>
                             </li>
@@ -119,17 +112,16 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2023 GameRecommender. All rights reserved.</p>
+            <p>&copy; 2024 GameRecommender. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-        // JavaScript để mở rộng/thu gọn mô tả
         const toggleBtn = document.getElementById('toggle-desc-btn');
         const truncatedDesc = document.getElementById('truncated-desc');
         const fullDesc = document.getElementById('full-desc');
 
-        if (toggleBtn) { // Chỉ chạy nếu nút tồn tại
+        if (toggleBtn) {
             toggleBtn.addEventListener('click', function() {
                 if (fullDesc.style.display === 'none') {
                     fullDesc.style.display = 'block';
