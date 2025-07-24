@@ -27,7 +27,7 @@ from sklearn.metrics import mean_squared_error
 # --- 1. Tìm, Chọn Dữ liệu và Xử lý Dữ liệu ---
 # print("--- 1. Tải và Xử lý Dữ liệu (steam-200k.csv) ---")
 
-df = pd.read_csv(r"C:\Users\thanh\Downloads\steam-200k.csv\steam-200k.csv", header=None)
+df = pd.read_csv("steam-200k.csv", header=None)
 df.columns = ['user_id', 'game_title', 'behavior_name', 'value', 'unused']
 
 # Bỏ cột 'unused'

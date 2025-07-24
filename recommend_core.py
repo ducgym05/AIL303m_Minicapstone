@@ -321,7 +321,50 @@ if __name__ == "__main__":
     # Initialize Surprise Recommender
     print("\n--- Khởi tạo và chạy Surprise Recommender (Test) ---")
     surprise_rec_test = SurpriseRecommender(play_df, user_encoder, item_encoder)
+      # # We pass the original play_df (before filtering by FILL_VAL) to Surprise
+    # # because Surprise handles its own internal filtering/mapping.
+    # # The 'value' column in play_df is the transformed rating.
 
+    # # Example recommendation for Surprise
+    # # Pick a game_idx that exists in the filtered data for a meaningful example
+    if not filtered.empty:
+        example_game_idx_surprise = filtered['item_idx'].iloc[0] # Take the first game_idx from filtered data
+        original_game_title_surprise = item_encoder.inverse_transform([example_game_idx_surprise])[0]
+        print(f"\nĐề xuất cho game_idx (Surprise): {example_game_idx_surprise} (Game: '{original_game_title_surprise}')")
+        
+        recommended_games_surprise = surprise_rec_test.recommend(example_game_idx_surprise, num_recommendations=6)
+        
+        if recommended_games_surprise:
+            print(f"6 game_idx được đề xuất bởi Surprise: {recommended_games_surprise}")
+            # Convert back to original game titles for better understanding
+            recommended_titles_surprise = item_encoder.inverse_transform(recommended_games_surprise)
+            print(f"Tên game được đề xuất bởi Surprise: {list(recommended_titles_surprise)}")
+        else:
+            print("Không có đề xuất nào từ Surprise.")
+    else:
+        print("Không có đủ dữ liệu đã lọc để chạy ví dụ Surprise.")
+    # Initialize Scikit-learn Recommender
+    print("\n--- Khởi tạo và chạy Scikit-learn Recommender ---")
+    # We pass the 'filtered' DataFrame to ScikitLearnRecommender as it uses the pre-filtered indices.
+    sklearn_rec = ScikitLearnRecommender(filtered, user_encoder, item_encoder, num_users_total, num_items_total)
+
+    # Example recommendation for Scikit-learn
+    if not filtered.empty:
+        example_game_idx_sklearn = filtered['item_idx'].iloc[1] # Take another game_idx
+        original_game_title_sklearn = item_encoder.inverse_transform([example_game_idx_sklearn])[0]
+        print(f"\nĐề xuất cho game_idx (Scikit-learn): {example_game_idx_sklearn} (Game: '{original_game_title_sklearn}')")
+        
+        recommended_games_sklearn = sklearn_rec.recommend(example_game_idx_sklearn, num_recommendations=6)
+
+        if recommended_games_sklearn:
+            print(f"6 game_idx được đề xuất bởi Scikit-learn: {recommended_games_sklearn}")
+            # Convert back to original game titles for better understanding
+            recommended_titles_sklearn = item_encoder.inverse_transform(recommended_games_sklearn)
+            print(f"Tên game được đề xuất bởi Scikit-learn: {list(recommended_titles_sklearn)}")
+        else:
+            print("Không có đề xuất nào từ Scikit-learn.")
+    else:
+        print("Không có đủ dữ liệu đã lọc để chạy ví dụ Scikit-learn.")
     # Example recommendation for Surprise
     if not filtered.empty:
         example_game_idx_surprise = filtered['item_idx'].iloc[0]
